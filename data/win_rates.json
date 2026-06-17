@@ -1,0 +1,92 @@
+{
+  "strategy_rates": {
+    "x-lock": 1.00,
+    "dual-wield": 0.85,
+    "nine-plus": 0.70,
+    "three-prime-eight-composite": 0.90,
+    "three-kkj": 0.75,
+    "two-kk-factor": 0.98,
+    "one-x-one-x": 1.00,
+    "face-five-prime": 0.80,
+    "trumps": 0.90,
+    "all-out": 0.50
+  },
+  "conditional_rates": [
+    {
+      "strategy": "face-five-prime",
+      "play_count": 5,
+      "digit_count": 10,
+      "value_min": 1313121011,
+      "rate": 0.985,
+      "description": "5枚10桁でKKQTJ以上"
+    },
+    {
+      "strategy": "face-five-prime",
+      "play_count": 5,
+      "digit_count": 10,
+      "value_min": 1312101313,
+      "rate": 0.94,
+      "description": "5枚10桁でKQTKK以上"
+    },
+    {
+      "strategy": "face-five-prime",
+      "play_count": 5,
+      "digit_count": 10,
+      "rate": 0.86,
+      "description": "5枚10桁の切り札寄り評価"
+    },
+    {
+      "strategy": "face-five-prime",
+      "gain_min": 7,
+      "rate": 0.997,
+      "description": "gain>=7"
+    },
+    {
+      "strategy": "face-five-prime",
+      "gain": 6,
+      "rate": 0.97,
+      "description": "gain6"
+    },
+    {
+      "strategy": "face-five-prime",
+      "gain": 5,
+      "rate": 0.84,
+      "description": "gain5"
+    },
+    {
+      "strategy": "nine-plus",
+      "play_count": 9,
+      "gain": 4,
+      "rate": 0.80,
+      "description": "9枚かつgain4"
+    },
+    {
+      "strategy": "nine-plus",
+      "play_count_min": 10,
+      "rate": 0.80,
+      "description": "10枚以上"
+    },
+    {
+      "strategy": "nine-plus",
+      "play_count": 9,
+      "rate": 0.70,
+      "description": "9枚"
+    }
+  ],
+  "move_overrides": {
+    "dual-wield:KJQJ": 0.97,
+    "dual-wield:KKJ": 0.97,
+    "trumps:KKJ": 0.999,
+    "trumps:KQK": 0.84,
+    "trumps:KJJ": 0.75,
+    "trumps:KJTK": 0.90,
+    "trumps:KTQJ": 0.80,
+    "trumps:QQQJ": 0.73,
+    "trumps:QK": 0.80,
+    "trumps:KQ": 0.96,
+    "trumps:KJ": 0.90,
+    "trumps:KT": 0.90,
+    "trumps:KK": 1.00,
+    "trumps:KJQJ": 1.00
+  }
+}
