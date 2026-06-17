@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>素数大富豪 戦術シミュレーションビューア</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+      <div class="wrap topbar__inner">
+      <div>
+        <p class="eyebrow">Prime Daifugo Policy Study</p>
+        <h1>素数大富豪 戦術シミュレーションビューア</h1>
+      </div>
+      <div class="dataset-switch" role="group" aria-label="表示データ">
+        <button class="segmented is-active" type="button" data-dataset="normal">通常</button>
+        <button class="segmented" type="button" data-dataset="uta">追加データ例</button>
+        <button class="segmented is-hidden" type="button" data-dataset="custom" id="customDatasetTab">シミュレーション結果</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap layout">
+    <section class="panel summary-panel" aria-labelledby="summary-title">
+      <div class="section-heading">
+        <h2 id="summary-title">集計</h2>
+        <button class="icon-button" type="button" id="refreshButton" title="同梱データを再読込" aria-label="同梱データを再読込">↻</button>
+      </div>
+      <div class="metrics" id="summaryMetrics"></div>
+      <div class="compare-strip" id="compareStrip"></div>
+    </section>
+
+    <section class="panel memory-panel" aria-labelledby="memory-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="memory-title">記憶セット</h2>
+          <p class="muted">サンプルを起点に、素数・合成数を貼り替えてブラウザ内で再シミュレーションできます。</p>
+        </div>
+        <div class="small-actions">
+          <button type="button" id="loadSampleMemory">サンプル</button>
+          <button type="button" id="clearMemory">空にする</button>
+        </div>
+      </div>
+      <div class="memory-grid">
+        <label>
+          <span>素数リスト</span>
+          <textarea id="primeText" spellcheck="false"></textarea>
+        </label>
+        <label>
+          <span>合成数リスト</span>
+          <textarea id="compositeText" spellcheck="false"></textarea>
+        </label>
+      </div>
+      <label class="check-chip memory-check additional-toggle">
+        <input id="includeAdditional" type="checkbox">
+        追加セットを使う
+      </label>
+      <div class="memory-grid additional-grid" id="additionalInputs">
+        <label>
+          <span>追加素数リスト</span>
+          <textarea id="additionalPrimeText" spellcheck="false"></textarea>
+        </label>
+        <label>
+          <span>追加合成数リスト</span>
+          <textarea id="additionalCompositeText" spellcheck="false"></textarea>
+        </label>
+      </div>
+      <div class="simulation-controls">
+        <label>
+          <span>試行数</span>
+          <input id="trialCount" type="number" min="1" max="20000" step="100" value="300">
+        </label>
+        <label>
+          <span>seed</span>
+          <input id="simSeed" type="number" step="1" value="20260613">
+        </label>
+        <label>
+          <span>手札枚数</span>
+          <input id="handSize" type="number" min="1" max="20" step="1" value="11">
+        </label>
+        <button type="button" id="runSimulation">実行</button>
+      </div>
+      <div class="parse-status" id="parseStatus"></div>
+    </section>
+
+    <section class="panel model-panel" aria-labelledby="model-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="model-title">勝率モデル</h2>
+          <p class="muted">候補として記録された全戦術を対象に、採用可否と勝率を調整できます。</p>
+        </div>
+        <div class="small-actions">
+          <button type="button" id="enableStrategies">全有効</button>
+          <button type="button" id="disableStrategies">全無効</button>
+          <button type="button" id="resetModel">リセット</button>
+        </div>
+      </div>
+      <div class="model-table" id="modelControls"></div>
+      <details class="json-editor">
+        <summary>詳細勝率JSON</summary>
+        <textarea id="winRateJson" spellcheck="false"></textarea>
+        <div class="small-actions json-actions">
+          <button type="button" id="applyWinRateJson">適用</button>
+          <button type="button" id="resetWinRateJson">初期値</button>
+        </div>
+        <p class="muted" id="winRateJsonStatus"></p>
+      </details>
+    </section>
+
+    <section class="panel" aria-labelledby="strategy-title">
+      <div class="section-heading">
+        <h2 id="strategy-title">戦術別</h2>
+        <div class="small-actions">
+          <button type="button" id="selectAll">全選択</button>
+          <button type="button" id="selectNone">解除</button>
+        </div>
+      </div>
+      <div class="strategy-table" id="strategyTable"></div>
+      <div class="strategy-filters" id="strategyFilters"></div>
+    </section>
+
+    <section class="panel controls" aria-labelledby="controls-title">
+      <h2 id="controls-title">表示</h2>
+      <label>
+        <span>絞り込み対象</span>
+        <select id="scope">
+          <option value="selected">採用戦術</option>
+          <option value="candidate">候補戦術も含める</option>
+        </select>
+      </label>
+      <label>
+        <span>検索</span>
+        <input id="search" type="search" placeholder="例: KJQJ, 57, DRAW">
+      </label>
+      <label>
+        <span>並び順</span>
+        <select id="order">
+          <option value="trial">試行順</option>
+          <option value="strategy">戦術順</option>
+          <option value="rate">勝率順</option>
+          <option value="finish">最終手枚数順</option>
+        </select>
+      </label>
+      <label class="file-load">
+        <span>結果JSONを読む</span>
+        <input id="fileInput" type="file" accept="application/json,.json">
+      </label>
+      <button type="button" id="downloadReport">表示中JSONをダウンロード</button>
+    </section>
+
+    <section class="cases-section" aria-labelledby="cases-title">
+      <div class="section-heading cases-heading">
+        <div>
+          <h2 id="cases-title">採用例</h2>
+          <p id="caseCount" class="muted"></p>
+        </div>
+      </div>
+      <div id="caseList" class="case-list"></div>
+    </section>
+  </main>
+
+  <script type="module" src="./assets/app.js?v=20260617-context"></script>
+</body>
+</html>
