@@ -136,6 +136,7 @@ h2 {
 }
 
 .summary-panel,
+.help-panel,
 .memory-panel,
 .model-panel,
 .cases-section {
@@ -398,6 +399,65 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.strategy-id {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.help-panel details {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.help-panel summary {
+  color: var(--ink);
+}
+
+.help-content {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.help-content h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.help-content p {
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+
+.strategy-glossary {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.strategy-glossary div {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr);
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 5px;
+}
+
+.strategy-glossary dt {
+  font-weight: 800;
+}
+
+.strategy-glossary dd {
+  margin: 0;
+  color: var(--muted);
+}
+
 .bar {
   height: 7px;
   border-radius: 999px;
@@ -641,6 +701,10 @@ summary {
   }
 
   .memory-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .help-content {
     grid-template-columns: 1fr;
   }
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>素数大富豪 戦術シミュレーションビューア</title>
-  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="stylesheet" href="./assets/styles.css?v=20260617-help">
 </head>
 <body>
   <header class="topbar">
@@ -29,6 +29,40 @@
       </div>
       <div class="metrics" id="summaryMetrics"></div>
       <div class="compare-strip" id="compareStrip"></div>
+    </section>
+
+    <section class="panel help-panel" aria-labelledby="help-title">
+      <details>
+        <summary id="help-title">入力形式と戦術名の説明</summary>
+        <div class="help-content">
+          <div>
+            <h3>カード表記</h3>
+            <p>素数・合成数リストでは、数字と <code>t</code>, <code>j</code>, <code>q</code>, <code>k</code> を使えます。<code>t/j/q/k</code> はそれぞれ <code>10/11/12/13</code> として数値化されます。</p>
+            <p><code>0</code> は単独カードではなく、<code>10</code> を数字だけで書くときの一部です。ジョーカーは入力欄では使わず、結果表示では <code>X</code> と表示します。</p>
+            <p>たとえば <code>1213</code> は、物理カードとして <code>qk</code>, <code>12k</code>, <code>q13</code>, <code>1213</code> などに展開されます。</p>
+          </div>
+          <div>
+            <h3>合成数式</h3>
+            <p><code>左辺=右辺</code> の形で入力します。<code>*</code> や <code>^</code> は区切りとして扱い、右辺の数式を厳密に検算するものではありません。</p>
+            <p><code>|</code> 以降を書くと、実際に消費するカード列を固定できます。例: <code>8qj=6247*k | 24678jqk</code></p>
+          </div>
+          <div>
+            <h3>戦術名</h3>
+            <dl class="strategy-glossary">
+              <div><dt>Xロック</dt><dd><code>x-lock</code></dd></div>
+              <div><dt>二刀流</dt><dd><code>dual-wield</code></dd></div>
+              <div><dt>初手9枚出し以上</dt><dd><code>nine-plus</code></dd></div>
+              <div><dt>3枚出し合成数上がり</dt><dd><code>three-prime-eight-composite</code></dd></div>
+              <div><dt>KKJオーソドックス</dt><dd><code>three-kkj</code></dd></div>
+              <div><dt>KKオーソドックス</dt><dd><code>two-kk-factor</code></dd></div>
+              <div><dt>Xロック（1枚出し2回）</dt><dd><code>one-x-one-x</code></dd></div>
+              <div><dt>初手絵札5枚以上</dt><dd><code>face-five-prime</code></dd></div>
+              <div><dt>初手切り札</dt><dd><code>trumps</code></dd></div>
+              <div><dt>全出し</dt><dd><code>all-out</code></dd></div>
+            </dl>
+          </div>
+        </div>
+      </details>
     </section>
 
     <section class="panel memory-panel" aria-labelledby="memory-title">
@@ -160,6 +194,6 @@
     </section>
   </main>
 
-  <script type="module" src="./assets/app.js?v=20260617-context"></script>
+  <script type="module" src="./assets/app.js?v=20260617-help"></script>
 </body>
 </html>

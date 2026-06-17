@@ -11,6 +11,19 @@ const DATASETS = {
   },
 };
 
+const STRATEGY_LABELS = {
+  "x-lock": "Xロック",
+  "dual-wield": "二刀流",
+  "nine-plus": "初手9枚出し以上",
+  "three-prime-eight-composite": "3枚出し合成数上がり",
+  "three-kkj": "KKJオーソドックス",
+  "two-kk-factor": "KKオーソドックス",
+  "one-x-one-x": "Xロック（1枚出し2回）",
+  "face-five-prime": "初手絵札5枚以上",
+  "trumps": "初手切り札",
+  "all-out": "全出し",
+};
+
 const state = {
   reports: {},
   activeKey: "normal",
@@ -573,7 +586,7 @@ function renderModelControls(report) {
   els.modelControls.innerHTML = Object.entries(model.settings).map(([strategy, setting]) => `
     <label class="model-row">
       <input class="model-enabled" type="checkbox" data-strategy="${escapeHtml(strategy)}" ${setting.enabled ? "checked" : ""} ${strategy === "all-out" ? "disabled" : ""}>
-      <span class="model-name">${escapeHtml(strategy)}</span>
+      <span class="model-name">${strategyNameHtml(strategy)}</span>
       <span class="model-default">${formatPercent(setting.defaultRate)}</span>
       <input class="model-rate" type="number" inputmode="decimal" min="0" max="100" step="0.1" data-strategy="${escapeHtml(strategy)}" value="${escapeHtml(setting.rateOverride)}" placeholder="${percentNumber(setting.defaultRate)}">
     </label>
@@ -792,7 +805,7 @@ function renderStrategies(report) {
     </div>
   ` + rows.map((row) => `
     <div class="strategy-row">
-      <strong>${escapeHtml(row.strategy)}</strong>
+      <strong>${strategyNameHtml(row.strategy)}</strong>
       <span>${formatInt(row.selected)}件</span>
       <span>${formatPercent(row.adoption_rate)}</span>
       <span class="hide-mobile">${formatPercent(row.average_selected_win_rate)}</span>
@@ -808,7 +821,7 @@ function renderStrategies(report) {
     return `
       <label class="check-chip">
         <input class="strategy-filter" type="checkbox" value="${escapeHtml(strategy)}" ${isChecked ? "checked" : ""}>
-        ${escapeHtml(strategy)}
+        ${escapeHtml(strategyLabel(strategy))}
       </label>
     `;
   }).join("");
@@ -853,7 +866,7 @@ function renderCase(row) {
   return `
     <article class="case">
       <div class="casehead">
-        <strong>#${row.trial} ${escapeHtml(row.strategy)}</strong>
+        <strong>#${row.trial} ${strategyNameHtml(row.strategy)}</strong>
         <span class="rate">${formatPercent(row.win_rate)}</span>
         ${row.drawn_card === null ? "" : `<span class="pill">ドロー ${escapeHtml(rankLabel(row.drawn_card))}</span>`}
       </div>
@@ -875,7 +888,7 @@ function renderCandidates(items, title) {
       ${items.map((item) => `
         <div class="candidate">
           <div class="candidate-head">
-            <b>${escapeHtml(item.strategy)}</b>
+            <b>${strategyNameHtml(item.strategy)}</b>
             <span>${formatPercent(item.win_rate)}</span>
             <span>モデル ${formatPercent(effectiveRate(item))}</span>
             <span>最終手 ${formatInt(item.finish_size)}枚</span>
@@ -953,11 +966,29 @@ function finishSize(row) {
 }
 
 function searchableText(row) {
-  return JSON.stringify(row).toLowerCase();
+  const labels = [row.strategy, strategyLabel(row.strategy)];
+  for (const candidate of [...(row.initial_candidates || []), ...(row.draw_candidates || [])]) {
+    labels.push(candidate.strategy, strategyLabel(candidate.strategy));
+  }
+  return `${JSON.stringify(row)} ${labels.join(" ")}`.toLowerCase();
 }
 
 function baseStrategy(strategy) {
   return strategy.replace(/^draw:/, "");
+}
+
+function strategyLabel(strategy) {
+  const isDraw = strategy.startsWith("draw:");
+  const base = baseStrategy(strategy);
+  const label = STRATEGY_LABELS[base] || base;
+  return isDraw ? `ドロー後: ${label}` : label;
+}
+
+function strategyNameHtml(strategy) {
+  const base = baseStrategy(strategy);
+  const label = strategyLabel(strategy);
+  if (label === strategy) return escapeHtml(strategy);
+  return `${escapeHtml(label)}<small class="strategy-id">${escapeHtml(strategy)}</small>`;
 }
 
 function rankLabel(rank) {
